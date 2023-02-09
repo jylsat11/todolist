@@ -1,7 +1,7 @@
 <template>
-<div>
-  <todo-main></todo-main>
-</div>
+  <div>
+    <todo-main></todo-main>
+  </div>
 
 </template>
 
@@ -9,7 +9,6 @@
 import TodoMain from './components/TodoMain.vue'
 
 export default {
-  name: 'App',
   components: {
     TodoMain
   }
