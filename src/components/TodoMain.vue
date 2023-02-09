@@ -3,9 +3,13 @@
     <header><h1>Vue Fire todo1</h1></header>
     <main>
       <div class="todos">
-        <div class="write">
+        <div class="write" v-if="writeState==='add'"> <!--등록-->
           <input ref="writeArea" type="text" v-model="addItemText" @keyup.enter="addItem"/>
           <button class="btn add" v-on:click="addItem">Add</button>
+        </div>
+        <div class="write" v-else> <!--수정-->
+          <input ref="writeArea" type="text" v-model="editItemText" @keyup.enter="editSave"/>
+          <button class="btn add" v-on:click="editSave">Save</button>
         </div>
         <ul class="list">
           <li v-for="(item, i) in todos" :key="i">
@@ -14,7 +18,7 @@
             <span>
               {{ item.text }}
               <b>
-                <a href="">Edit</a>
+                <a href="" v-on:click.prevent="editshow(i)">Edit</a>
                 <a href="" v-on:click.prevent='delItem(i)'>Del</a>
               </b>
             </span>
@@ -31,6 +35,9 @@ export default {
     data() {
         return {
             addItemText:'',
+            crrEditItem:'',
+            writeState:'add',
+            editItemText:'',
             todos:[
             {text: '공부하기', state: 'yet'},
             {text: '운동하기', state: 'done'},
@@ -39,16 +46,15 @@ export default {
         }
     },
     methods: {
-        // editItem(ev) {
-        // let todoDetail = ev.target.parentNode.parentNode.textContent 
-        // console.log(todoDetail)
-        // let input = document.querySelector('input')
-        // input.value=todoDetail
-        // },
-        // editItem(index) {
-        //     let input = document.querySelector('input')
-        //     input.value = todos[index].text.value;
-        // },
+        editshow(index) {
+            this.crrEditItem = index;
+            this.writeState = 'edit';
+            this.editItemText = this.todos[index].text;
+        },
+        editSave() {
+            this.todos[this.crrEditItem].text = this.editItemText;
+            this.writeState='add';
+        },
         addItem() {
             if (this.addItemText==='') return; 
             this.todos.push({
@@ -56,9 +62,9 @@ export default {
             });
             this.addItemText='';
         },
-        // delItem(index){
-        //     this.todos.splice(index,1)
-        // },
+        delItem(index){
+            this.todos.splice(index,1)
+        },
         checkItem(index) {
             let status = this.todos[index].state;
             console.log(status);
