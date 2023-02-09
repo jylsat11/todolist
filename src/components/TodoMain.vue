@@ -4,18 +4,18 @@
     <main>
       <div class="todos">
         <div class="write">
-          <input id="text1" type="text" @keyup.enter="addItem"/>
+          <input ref="writeArea" type="text" v-model="addItemText" @keyup.enter="addItem"/>
           <button class="btn add" v-on:click="addItem">Add</button>
         </div>
         <ul class="list">
-          <li v-for="item in todos" :key="item.text">
+          <li v-for="(item, i) in todos" :key="i">
             <!-- <i class="far fa-check-square"></i> -->
-            <i :class="[item.state==='yet' ? 'far' :'fas', 'fa-check-square']"></i>
+            <i :class="[item.state==='yet' ? 'far' :'fas', 'fa-check-square']" @click="checkItem(i)"></i>
             <span>
               {{ item.text }}
               <b>
-                <a href="" >Edit</a>
-                <a href="">Del</a>
+                <a href="">Edit</a>
+                <a href="" v-on:click.prevent='delItem(i)'>Del</a>
               </b>
             </span>
           </li>
@@ -39,14 +39,40 @@ export default {
         }
     },
     methods: {
-
+        // editItem(ev) {
+        // let todoDetail = ev.target.parentNode.parentNode.textContent 
+        // console.log(todoDetail)
+        // let input = document.querySelector('input')
+        // input.value=todoDetail
+        // },
+        // editItem(index) {
+        //     let input = document.querySelector('input')
+        //     input.value = todos[index].text.value;
+        // },
         addItem() {
-            let input= document.querySelector('input');
-            this.addItemText=input.value;
+            if (this.addItemText==='') return; 
             this.todos.push({
                 text: this.addItemText, state: 'yet'
-            })
+            });
+            this.addItemText='';
+        },
+        // delItem(index){
+        //     this.todos.splice(index,1)
+        // },
+        checkItem(index) {
+            let status = this.todos[index].state;
+            console.log(status);
+            if (status==='yet') {
+                this.todos[index].state = 'done';
+            }
+            else {
+                this.todos[index].state = 'yet';
+            }
+            
         }
+    },
+    mounted() {
+        this.$refs.writeArea.focus()
     }
 }
 </script>
